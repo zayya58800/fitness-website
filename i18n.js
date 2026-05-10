@@ -1,0 +1,32 @@
+// ==================== 界面文字 ====================
+// 中文版本
+const TEXTS = {
+    navHome: "🏠 首页",
+    navTrain: "🔥 今日训练",
+    navLibrary: "📚 动作库",
+    navProgress: "📈 我的进度",
+    homeTitle: "今天练什么？",
+    homeRecommend: "推荐训练",
+    homeStartBtn: "⚡ 开始今日训练",
+    homeSelectMuscle: "选择训练部位 (可多选)",
+    homeRecentWeight: "最近体重",
+    trainSelectTitle: "选择今天想练的部位 (可以点多个)",
+    trainGenerateBtn: "✨ 生成训练计划",
+    trainCompleteBtn: "✅ 完成训练并打卡",
+    trainTodayComplete: "今日已完成训练",
+    trainNoComplete: "今天还没有完成训练，快开始吧！💪",
+    trainTotalCount: "共 {count} 个动作，选择你今天完成的：",
+    libraryTitle: "动作库大全",
+    progressTitle: "我的健身进度",
+    progressWeight: "记录体重",
+    progressWeightPlaceholder: "今天体重 (kg)",
+    progressSaveWeight: "💾 保存体重",
+    progressRecentWeight: "最近体重记录",
+    progressCalendar: "30天训练日历",
+    progressCalendarHint: "🟢 绿色 = 有训练 · 鼠标悬停看详情",
+    progressRecentHistory: "最近训练记录",
+    progressNoHistory: "暂无训练记录，快去打卡吧！",
+    confirmComplete: "请至少勾选一个完成的动作再打卡",
+    completeSuccess: "✅ 训练打卡完成！\n完成了 {count} 个动作，继续坚持！",
+    weightInvalid: "请输入有效的体重数字"
+};
