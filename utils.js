@@ -9,6 +9,21 @@ function getAllWorkouts() {
     return data ? JSON.parse(data) : {};
 }
 
+// 从 reps 值（可能已带单位）中提取纯数字部分
+function repsNum(repsStr) {
+    if (typeof repsStr === 'number') return repsStr;
+    return parseInt(repsStr) || 0;
+}
+
+// 格式化 reps 显示：提取数字部分 + 当前语言单位
+function repsDisplay(repsStr) {
+    if (typeof repsStr === 'number') return repsStr + t('repsUnit');
+    // 提取数字+范围、去掉单位后缀（如 "次" "ကြိမ်" "reps" "/侧" 等）
+    var clean = repsStr.replace(/[^0-9/]/g, ''); // only keep digits and /
+    if (!clean) return repsStr;
+    return clean + t('repsUnit');
+}
+
 function saveWorkout(dateStr, exercisesDone, totalCalories) {
     let allWorkouts = getAllWorkouts();
     allWorkouts[dateStr] = {
@@ -134,7 +149,153 @@ function clearTodayIntake() {
     localStorage.setItem("daily_intake", JSON.stringify(newIntake));
 }
 
-// ==================== 今日消耗计算 ====================
+// ==================== 自定义训练计划（保存供明天使用） ====================
+function saveMyPlan(exercises) {
+    // exercises: array of {name, target, sets, reps, calories, comment?}
+    const plan = {
+        date: getTodayStr(),
+        exercises: exercises,
+        savedAt: new Date().getTime()
+    };
+    localStorage.setItem("fitness_my_plan", JSON.stringify(plan));
+}
+
+function getMyPlan() {
+    const data = localStorage.getItem("fitness_my_plan");
+    if (!data) return null;
+    return JSON.parse(data);
+}
+
+function clearMyPlan() {
+    localStorage.removeItem("fitness_my_plan");
+}
+
+// ==================== 部位训练数据分析 ====================
+// 获取所有训练记录中各部位的总组数
+function getMuscleStats() {
+    const allWorkouts = getAllWorkouts();
+    const muscleStats = {};
+    // 初始化所有肌肉部位
+    for (let m of MUSCLES_SIMPLE) {
+        muscleStats[m] = { totalSets: 0, bestWeight: 0, bestWeightExercise: '', totalWorkouts: 0, totalReps: 0, dates: {} };
+    }
+    
+    for (let dateKey in allWorkouts) {
+        const workout = allWorkouts[dateKey];
+        if (!workout.exercises) continue;
+        
+        // 判断每个动作属于哪个部位
+        for (let ex of workout.exercises) {
+            let foundMuscle = null;
+            for (let muscle of MUSCLES_SIMPLE) {
+                const plans = WORKOUT_PLANS[muscle] || [];
+                if (plans.find(p => p.name === ex.name)) {
+                    foundMuscle = muscle;
+                    break;
+                }
+            }
+            if (!foundMuscle) continue;
+            
+            const sets = parseInt(ex.sets) || 0;
+            const reps = parseInt(ex.reps) || 0;
+            const weight = parseFloat(ex.weight) || 0;
+            
+            muscleStats[foundMuscle].totalSets += sets;
+            muscleStats[foundMuscle].totalReps += reps * sets;
+            muscleStats[foundMuscle].totalWorkouts += 1;
+            
+            // 记录每天每组
+            if (!muscleStats[foundMuscle].dates[dateKey]) {
+                muscleStats[foundMuscle].dates[dateKey] = { sets: 0, weight: 0, maxWeight: 0 };
+            }
+            muscleStats[foundMuscle].dates[dateKey].sets += sets;
+            muscleStats[foundMuscle].dates[dateKey].maxWeight = Math.max(muscleStats[foundMuscle].dates[dateKey].maxWeight, weight);
+            muscleStats[foundMuscle].dates[dateKey].weight = Math.max(muscleStats[foundMuscle].dates[dateKey].weight, weight);
+            
+            // 最佳成绩
+            if (weight > muscleStats[foundMuscle].bestWeight) {
+                muscleStats[foundMuscle].bestWeight = weight;
+                muscleStats[foundMuscle].bestWeightExercise = ex.name;
+            }
+        }
+    }
+    
+    return muscleStats;
+}
+
+// 按日期排序的数组
+function getMuscleTimeline(muscleName) {
+    const allWorkouts = getAllWorkouts();
+    const timeline = [];
+    
+    for (let dateKey in allWorkouts) {
+        const workout = allWorkouts[dateKey];
+        if (!workout.exercises) continue;
+        
+        let totalSets = 0;
+        let maxWeight = 0;
+        let maxWeightEx = '';
+        
+        for (let ex of workout.exercises) {
+            const plans = WORKOUT_PLANS[muscleName] || [];
+            if (plans.find(p => p.name === ex.name)) {
+                const sets = parseInt(ex.sets) || 0;
+                const weight = parseFloat(ex.weight) || 0;
+                totalSets += sets;
+                if (weight > maxWeight) {
+                    maxWeight = weight;
+                    maxWeightEx = ex.name;
+                }
+            }
+        }
+        
+        if (totalSets > 0) {
+            timeline.push({
+                date: dateKey,
+                totalSets: totalSets,
+                maxWeight: maxWeight,
+                maxWeightExercise: maxWeightEx
+            });
+        }
+    }
+    
+    return timeline.sort(function(a, b) { return a.date.localeCompare(b.date); });
+}
+// 保存每个动作每组完成后剩余休息时间
+let restTimers = {};
+
+function startSetRestTimer(exerciseIdx, seconds, onTick, onDone) {
+    // 清除旧的计时器
+    if (restTimers[exerciseIdx]) {
+        clearInterval(restTimers[exerciseIdx].interval);
+    }
+    let remaining = seconds;
+    restTimers[exerciseIdx] = {
+        remaining: remaining,
+        interval: setInterval(() => {
+            remaining--;
+            if (onTick) onTick(remaining);
+            if (remaining <= 0) {
+                clearInterval(restTimers[exerciseIdx].interval);
+                delete restTimers[exerciseIdx];
+                if (onDone) onDone();
+            }
+        }, 1000)
+    };
+    return restTimers[exerciseIdx];
+}
+
+function getRemainingRest(exerciseIdx) {
+    if (restTimers[exerciseIdx]) return restTimers[exerciseIdx].remaining;
+    return 0;
+}
+
+function stopSetRestTimer(exerciseIdx) {
+    if (restTimers[exerciseIdx]) {
+        clearInterval(restTimers[exerciseIdx].interval);
+        delete restTimers[exerciseIdx];
+    }
+}
 function getTodayExpenditure() {
     let todayRun = getRunByDate(getTodayStr());
     let todayWorkout = getWorkoutByDate(getTodayStr());
@@ -147,19 +308,20 @@ function getTodayExpenditure() {
     };
 }
 
-// ==================== 每日推荐 ====================
+// ==================== 每日推荐（已翻译） ====================
 function getDailyRecommendation() {
     const day = new Date().getDay();
+    // 使用 t() 函数获取翻译后的肌肉名称
     const map = {
-        1: ["胸部", "手臂(三头)"],
-        2: ["背部", "手臂(二头)"],
-        3: ["大腿前侧", "大腿后侧", "臀部"],
-        4: ["肩膀", "腹部"],
-        5: ["手臂(二头)", "手臂(三头)"],
-        6: ["胸部", "背部"],
-        0: ["腹部", "小腿"]
+        1: [t('muscleChest'), t('muscleTricep')],
+        2: [t('muscleBack'), t('muscleBicep')],
+        3: [t('muscleQuad'), t('muscleHamstring'), t('muscleGlute')],
+        4: [t('muscleShoulder'), t('muscleAbs')],
+        5: [t('muscleBicep'), t('muscleTricep')],
+        6: [t('muscleChest'), t('muscleBack')],
+        0: [t('muscleAbs'), t('muscleCalf')]
     };
-    return map[day] || ["胸部"];
+    return map[day] || [t('muscleChest')];
 }
 
 // ==================== 30天日历 ====================
@@ -202,10 +364,10 @@ function getLast30DaysRuns() {
 }
 
 // ==================== 最近7天热量总结 ====================
-function getLast7DaysHeatSummary() {
+function getLast3DaysHeatSummary() {
     let summary = [];
     let today = new Date();
-    for (let i = 6; i >= 0; i--) {
+    for (let i = 2; i >= 0; i--) {
         let d = new Date();
         d.setDate(today.getDate() - i);
         let ds = d.toISOString().slice(0, 10);
