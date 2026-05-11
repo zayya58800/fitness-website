@@ -3,67 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>MuscleMap Myanmar | 健身训练助手</title>
+    <title>MuscleMap | 健身训练助手</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .lang-switch {
+            display: flex;
+            gap: 4px;
+            background: #0a0a0a;
+            padding: 4px 8px;
+            border-radius: 30px;
+            margin-left: auto;
+            margin-right: 12px;
+        }
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: #888;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .lang-btn.active {
+            background: #fff;
+            color: #000;
+        }
+        .lang-btn:hover:not(.active) {
+            background: #222;
+            color: #fff;
+        }
+        @media (max-width: 768px) {
+            .lang-switch {
+                margin-right: 0;
+            }
+        }
+    </style>
 </head>
 <body>
 
 <div class="app-container">
-    <!-- Desktop nav bar (hidden on mobile) -->
     <header class="app-header">
         <div class="logo">
             <div class="logo-icon">💪</div>
-            <span>MuscleMap</span>
+            <span data-i18n="appName">MuscleMap</span>
+        </div>
+        <div class="lang-switch">
+            <button class="lang-btn active" data-lang="zh">中</button>
+            <button class="lang-btn" data-lang="my">မြန်မာ</button>
+            <button class="lang-btn" data-lang="en">EN</button>
         </div>
         <div class="nav-links" id="navLinks">
-            <a data-page="home" class="active">🏠 首页</a>
-            <a data-page="train">🔥 训练</a>
-            <a data-page="cardio">🏃 跑步</a>
-            <a data-page="nutrition">🥗 饮食</a>
-            <a data-page="library">📚 动作库</a>
-            <a data-page="progress">📈 进度</a>
-            <a data-page="yearSummary">📅 年度</a>
-            <a data-page="contact">📧 联系</a>
+            <a data-page="home" class="active" data-i18n="navHome">🏠 首页</a>
+            <a data-page="train" data-i18n="navTrain">🔥 训练</a>
+            <a data-page="cardio" data-i18n="navCardio">🏃 跑步</a>
+            <a data-page="nutrition" data-i18n="navNutrition">🥗 饮食</a>
+            <a data-page="weeklyPlan" data-i18n="navWeeklyPlan">📅 计划</a>
+            <a data-page="library" data-i18n="navLibrary">📚 动作库</a>
+            <a data-page="progress" data-i18n="navProgress">📈 进度</a>
+            <a data-page="yearSummary" data-i18n="navYearSummary">📅 年度</a>
+            <a data-page="contact" data-i18n="navContact">📧 联系</a>
         </div>
         <button class="burger" id="burgerBtn">☰</button>
     </header>
 
-    <!-- Page content -->
     <main id="app">
         <div class="container" style="text-align:center; padding: 3rem;">
-            <div class="card">加载中...</div>
+            <div class="card" data-i18n="commonLoading">加载中...</div>
         </div>
     </main>
 
-    <!-- Mobile bottom navigation -->
     <nav class="bottom-nav" id="bottomNav">
         <button class="nav-item active" data-page="home">
             <span class="nav-icon">🏠</span>
-            <span class="nav-label">首页</span>
+            <span class="nav-label" data-i18n="navHome">首页</span>
         </button>
         <button class="nav-item" data-page="train">
             <span class="nav-icon">🔥</span>
-            <span class="nav-label">训练</span>
+            <span class="nav-label" data-i18n="navTrain">训练</span>
         </button>
         <button class="nav-item" data-page="cardio">
             <span class="nav-icon">🏃</span>
-            <span class="nav-label">跑步</span>
+            <span class="nav-label" data-i18n="navCardio">跑步</span>
         </button>
         <button class="nav-item" data-page="nutrition">
             <span class="nav-icon">🥗</span>
-            <span class="nav-label">饮食</span>
+            <span class="nav-label" data-i18n="navNutrition">饮食</span>
+        </button>
+        <button class="nav-item" data-page="weeklyPlan">
+            <span class="nav-icon">📅</span>
+            <span class="nav-label" data-i18n="navWeeklyPlan">计划</span>
         </button>
         <button class="nav-item" data-page="progress">
             <span class="nav-icon">📈</span>
-            <span class="nav-label">进度</span>
+            <span class="nav-label" data-i18n="navProgress">进度</span>
         </button>
         <button class="nav-item" data-page="yearSummary">
             <span class="nav-icon">📅</span>
-            <span class="nav-label">年度</span>
+            <span class="nav-label" data-i18n="navYearSummary">年度</span>
         </button>
     </nav>
 </div>
 
+<script src="i18n.js"></script>
 <script src="data.js"></script>
 <script src="utils.js"></script>
 <script src="app.js"></script>
