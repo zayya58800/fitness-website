@@ -39,6 +39,70 @@
                 margin-right: 0;
             }
         }
+        /* ===== 可滚动底部导航栏 ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 480px;
+            margin: 0 auto;
+            background: #000000;
+            border-top: 0.5px solid #222;
+            display: flex;
+            gap: 2px;
+            padding: 8px 12px 12px;
+            z-index: 100;
+            padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            justify-content: flex-start;
+        }
+        .bottom-nav::-webkit-scrollbar {
+            height: 3px;
+        }
+        .bottom-nav::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            border-radius: 3px;
+        }
+        .bottom-nav::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 3px;
+        }
+        .nav-item {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            background: none;
+            border: none;
+            color: #555;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            min-width: 52px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .nav-item.active {
+            color: #fff;
+        }
+        .nav-item:active {
+            transform: scale(0.95);
+        }
+        .nav-icon {
+            font-size: 1.3rem;
+            line-height: 1;
+        }
+        .nav-label {
+            font-size: 0.55rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
     </style>
 </head>
 <body>
@@ -102,6 +166,14 @@
         <button class="nav-item" data-page="yearSummary">
             <span class="nav-icon">📅</span>
             <span class="nav-label" data-i18n="navYearSummary">年度</span>
+        </button>
+        <button class="nav-item" data-page="library">
+            <span class="nav-icon">📚</span>
+            <span class="nav-label" data-i18n="navLibrary">动作库</span>
+        </button>
+        <button class="nav-item" data-page="contact">
+            <span class="nav-icon">📧</span>
+            <span class="nav-label" data-i18n="navContact">联系</span>
         </button>
     </nav>
 </div>
