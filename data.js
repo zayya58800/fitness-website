@@ -237,3 +237,378 @@ function calculateFoodAmount(food, quantity) {
     };
 }
 
+// ==================== 自定义计划系统数据结构 ====================
+
+// 动作分类
+const EXERCISE_CATEGORIES = {
+    area: [
+        { value: "all", labelKey: "areaAll" },
+        { value: "upper", labelKey: "areaUpper" },
+        { value: "lower", labelKey: "areaLower" },
+        { value: "core", labelKey: "areaCore" },
+        { value: "full", labelKey: "areaFull" }
+    ],
+    equipment: [
+        { value: "all", labelKey: "equipAll" },
+        { value: "barbell", labelKey: "equipBarbell" },
+        { value: "dumbbell", labelKey: "equipDumbbell" },
+        { value: "machine", labelKey: "equipMachine" },
+        { value: "bodyweight", labelKey: "equipBodyweight" },
+        { value: "cable", labelKey: "equipCable" },
+        { value: "kettlebell", labelKey: "equipKettlebell" },
+        { value: "band", labelKey: "equipBand" },
+        { value: "ezbar", labelKey: "equipEzbar" },
+        { value: "medicine", labelKey: "equipMedicine" },
+        { value: "yogaball", labelKey: "equipYogaball" },
+        { value: "foamroller", labelKey: "equipFoamroller" },
+        { value: "other", labelKey: "equipOther" }
+    ],
+    pattern: [
+        { value: "all", labelKey: "patternAll" },
+        { value: "horizontalPush", labelKey: "patternHorizontalPush" },
+        { value: "horizontalPull", labelKey: "patternHorizontalPull" },
+        { value: "verticalPush", labelKey: "patternVerticalPush" },
+        { value: "verticalPull", labelKey: "patternVerticalPull" },
+        { value: "squat", labelKey: "patternSquat" },
+        { value: "loadedCarry", labelKey: "patternLoadedCarry" },
+        { value: "cardio", labelKey: "patternCardio" },
+        { value: "plyometric", labelKey: "patternPlyometric" }
+    ],
+    type: [
+        { value: "system", labelKey: "typeSystem" },
+        { value: "custom", labelKey: "typeCustom" }
+    ]
+};
+
+// 获取带分类信息的动作库
+function getExercisesWithCategories() {
+    let exercises = [];
+    for (let muscle of MUSCLES_SIMPLE) {
+        let plans = WORKOUT_PLANS[muscle] || [];
+        for (let ex of plans) {
+            exercises.push({
+                ...ex,
+                muscle: muscle,
+                area: getExerciseArea(muscle),
+                type: "system",
+                pattern: ex.pattern || getDefaultPattern(ex.name, muscle),
+                equipment: ex.equipment || "other"
+            });
+        }
+    }
+    return exercises;
+}
+
+function getExerciseArea(muscle) {
+    const upperMuscles = ["胸部", "背部", "肩膀", "手臂(二头)", "手臂(三头)"];
+    const lowerMuscles = ["大腿前侧", "大腿后侧", "臀部", "小腿"];
+    const coreMuscles = ["腹部"];
+    if (upperMuscles.includes(muscle)) return "upper";
+    if (lowerMuscles.includes(muscle)) return "lower";
+    if (coreMuscles.includes(muscle)) return "core";
+    return "full";
+}
+
+function getDefaultPattern(name, muscle) {
+    const chestPatterns = ["horizontalPush", "verticalPush"];
+    const backPatterns = ["horizontalPull", "verticalPull"];
+    const legPatterns = ["squat"];
+    const abPatterns = ["core"];
+    if (muscle === "胸部") return chestPatterns[0];
+    if (muscle === "背部") return backPatterns[0];
+    if (["大腿前侧", "大腿后侧", "臀部", "小腿"].includes(muscle)) return "squat";
+    if (muscle === "腹部") return "core";
+    return "horizontalPush";
+}
+
+// 自定义计划存储
+function getCustomPrograms() {
+    let data = localStorage.getItem("fitness_custom_programs");
+    return data ? JSON.parse(data) : [];
+}
+
+function saveCustomProgram(program) {
+    let programs = getCustomPrograms();
+    let existingIndex = programs.findIndex(p => p.id === program.id);
+    if (existingIndex !== -1) {
+        programs[existingIndex] = program;
+    } else {
+        programs.push(program);
+    }
+    localStorage.setItem("fitness_custom_programs", JSON.stringify(programs));
+    return program;
+}
+
+function deleteCustomProgram(programId) {
+    let programs = getCustomPrograms();
+    programs = programs.filter(p => p.id !== programId);
+    localStorage.setItem("fitness_custom_programs", JSON.stringify(programs));
+}
+
+function getCustomProgram(programId) {
+    let programs = getCustomPrograms();
+    return programs.find(p => p.id === programId);
+}
+
+// ==================== 日程系统数据结构 ====================
+
+// 获取所有计划日程（计划 + 训练记录）
+function getScheduleEvents() {
+    let events = [];
+    // 只有进行中且设置了开始日期的计划才在日程显示
+    let programs = getCustomPrograms();
+    let today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    for (let program of programs) {
+        // 只有状态为 active（进行中）的计划才在日程显示
+        if (program.status !== 'active') continue;
+        if (!program.scheduleStartDate) continue;
+        
+        let startDate = new Date(program.scheduleStartDate);
+        startDate.setHours(0, 0, 0, 0);
+        
+        for (let weekIdx = 0; weekIdx < program.weeks.length; weekIdx++) {
+            let week = program.weeks[weekIdx];
+            for (let dayIdx = 0; dayIdx < week.days.length; dayIdx++) {
+                let day = week.days[dayIdx];
+                // 计算该训练日的实际日期：开始日期 + 周数偏移 + 天数偏移
+                // 使用简单的 dayIdx 而不是 day.dayOfWeek，确保日期计算正确
+                let dayOffset = (weekIdx * 7) + dayIdx;
+                let eventDate = new Date(startDate);
+                eventDate.setDate(startDate.getDate() + dayOffset);
+                eventDate.setHours(0, 0, 0, 0);
+                
+                // 只显示今天及未来的训练日
+                if (eventDate < today) continue;
+                
+                let isCompleted = checkTrainingDayCompleted(program.id, weekIdx, dayIdx);
+                events.push({
+                    id: `${program.id}_w${weekIdx}_d${dayIdx}`,
+                    type: "program",
+                    programId: program.id,
+                    programName: program.name,
+                    weekIndex: weekIdx,
+                    weekName: week.name,
+                    dayIndex: dayIdx,
+                    dayName: day.name || `第${dayIdx+1}天`,
+                    date: eventDate.toISOString().slice(0, 10),
+                    exercises: day.exercises || [],
+                    status: isCompleted ? "completed" : "pending"
+                });
+            }
+        }
+    }
+    
+    // 按日期排序
+    events.sort(function(a, b) { return a.date.localeCompare(b.date); });
+    return events;
+}
+
+function getScheduleEventsByDate(dateStr) {
+    let events = getScheduleEvents();
+    // 只返回未完成的训练日
+    return events.filter(e => e.date === dateStr && e.status !== 'completed');
+}
+
+// ==================== 动作搜索 ====================
+
+function searchExercises(keyword, filters) {
+    let exercises = getExercisesWithCategories();
+    
+    if (keyword) {
+        let lowerKeyword = keyword.toLowerCase();
+        exercises = exercises.filter(ex => 
+            t(ex.name).toLowerCase().includes(lowerKeyword) ||
+            ex.name.toLowerCase().includes(lowerKeyword)
+        );
+    }
+    
+    if (filters) {
+        if (filters.area && filters.area !== "all") {
+            exercises = exercises.filter(ex => ex.area === filters.area);
+        }
+        if (filters.equipment && filters.equipment !== "all") {
+            exercises = exercises.filter(ex => {
+                let equipLower = ex.equipment.toLowerCase();
+                return equipLower.includes(filters.equipment) || 
+                       (filters.equipment === "bodyweight" && ex.equipment === "自重") ||
+                       (filters.equipment === "barbell" && ex.equipment.includes("杠铃")) ||
+                       (filters.equipment === "dumbbell" && ex.equipment.includes("哑铃")) ||
+                       (filters.equipment === "machine" && ex.equipment.includes("机")) ||
+                       (filters.equipment === "cable" && ex.equipment.includes("龙门架")) ||
+                       (filters.equipment === "band" && ex.equipment.includes("弹力"));
+            });
+        }
+        if (filters.pattern && filters.pattern !== "all") {
+            exercises = exercises.filter(ex => ex.pattern === filters.pattern);
+        }
+        if (filters.type && filters.type !== "all") {
+            exercises = exercises.filter(ex => ex.type === filters.type);
+        }
+    }
+    
+    return exercises;
+}
+
+// ==================== 每周训练计划提醒 ====================
+
+function getUpcomingTrainingDays(daysAhead = 7) {
+    let upcoming = [];
+    let today = new Date();
+    for (let i = 0; i <= daysAhead; i++) {
+        let checkDate = new Date(today);
+        checkDate.setDate(today.getDate() + i);
+        let dateStr = checkDate.toISOString().slice(0, 10);
+        let events = getScheduleEventsByDate(dateStr);
+        for (let event of events) {
+            upcoming.push({
+                date: dateStr,
+                dateDisplay: `${checkDate.getMonth()+1}/${checkDate.getDate()}`,
+                dayName: getDayNameShort(checkDate.getDay()),
+                event: event
+            });
+        }
+    }
+    return upcoming;
+}
+
+function getDayNameShort(dayIndex) {
+    const names = {0: "周日", 1: "周一", 2: "周二", 3: "周三", 4: "周四", 5: "周五", 6: "周六"};
+    return names[dayIndex] || "";
+}
+
+// ==================== 自定义计划 - 添加动作到某天 ====================
+window.addExerciseToDay = function(weekIdx, dayIdx, exerciseName) {
+    console.log("Adding exercise:", exerciseName, "to week", weekIdx, "day", dayIdx);
+    // 确保 window.editingWeeks 存在
+    if (typeof window.editingWeeks === 'undefined') {
+        window.editingWeeks = [];
+    }
+    let weeks = window.editingWeeks;
+    // 确保周存在
+    if (!weeks[weekIdx]) {
+        weeks[weekIdx] = { name: '', note: '', days: [] };
+    }
+    // 确保天存在
+    if (!weeks[weekIdx].days) {
+        weeks[weekIdx].days = [];
+    }
+    if (!weeks[weekIdx].days[dayIdx]) {
+        weeks[weekIdx].days[dayIdx] = { name: '', note: '', exercises: [], dayOfWeek: dayIdx };
+    }
+    if (!weeks[weekIdx].days[dayIdx].exercises) {
+        weeks[weekIdx].days[dayIdx].exercises = [];
+    }
+    // 查找动作详情
+    let exerciseData = null;
+    for (let muscle of MUSCLES_SIMPLE) {
+        let plans = WORKOUT_PLANS[muscle] || [];
+        let found = plans.find(e => e.name === exerciseName);
+        if (found) {
+            exerciseData = {
+                name: found.name,
+                sets: found.sets || 4,
+                reps: found.reps || 10,
+                weight: 20,
+                rest: found.rest || 60,
+                caloriesPerSet: found.caloriesPerSet || 5
+            };
+            break;
+        }
+    }
+    if (exerciseData) {
+        weeks[weekIdx].days[dayIdx].exercises.push(exerciseData);
+        window.editingWeeks = weeks;
+        console.log("Exercise added, now weeks:", JSON.stringify(weeks));
+        // 刷新编辑器显示
+        if (typeof refreshWeeksEditor === 'function') {
+            refreshWeeksEditor();
+        } else {
+            console.log("refreshWeeksEditor not available, trying to update DOM directly");
+            // 直接更新显示
+            let container = document.getElementById('weeksContainer');
+            if (container && typeof renderWeeksEditor === 'function') {
+                container.innerHTML = renderWeeksEditor(window.editingWeeks);
+                if (typeof bindWeekInputs === 'function') bindWeekInputs();
+            }
+        }
+    } else {
+        console.log("Exercise not found:", exerciseName);
+        alert('未找到动作: ' + exerciseName);
+    }
+};
+
+// ==================== 更新计划训练进度 ====================
+// 获取计划中所有训练日的完成情况
+function getProgramProgress(programId) {
+    let program = getCustomProgram(programId);
+    if (!program) return { total: 0, completed: 0, percent: 0 };
+    let totalDays = 0;
+    let completedDays = 0;
+    
+    // 计算总训练日数
+    for (let week of program.weeks) {
+        totalDays += week.days.length;
+    }
+    
+    // 检查每个训练日是否已完成
+    for (let weekIdx = 0; weekIdx < program.weeks.length; weekIdx++) {
+        let week = program.weeks[weekIdx];
+        for (let dayIdx = 0; dayIdx < week.days.length; dayIdx++) {
+            let day = week.days[dayIdx];
+            let eventId = `${program.id}_w${weekIdx}_d${dayIdx}`;
+            // 检查训练记录中是否有该天的完成记录
+            let isCompleted = checkTrainingDayCompleted(programId, weekIdx, dayIdx);
+            if (isCompleted) {
+                completedDays++;
+            }
+        }
+    }
+    
+    let percent = totalDays > 0 ? Math.round((completedDays / totalDays) * 100) : 0;
+    return { total: totalDays, completed: completedDays, percent: percent };
+}
+
+// 检查某个训练日是否已完成
+function checkTrainingDayCompleted(programId, weekIdx, dayIdx) {
+    let eventId = `${programId}_w${weekIdx}_d${dayIdx}`;
+    let completedKey = `program_completed_${eventId}`;
+    return localStorage.getItem(completedKey) === 'true';
+}
+
+// 标记训练日为已完成
+function markTrainingDayCompleted(programId, weekIdx, dayIdx) {
+    let eventId = `${programId}_w${weekIdx}_d${dayIdx}`;
+    let completedKey = `program_completed_${eventId}`;
+    localStorage.setItem(completedKey, 'true');
+    
+    // 检查计划是否全部完成
+    let progress = getProgramProgress(programId);
+    if (progress.completed === progress.total && progress.total > 0) {
+        // 全部完成，自动标记为已完成状态
+        let program = getCustomProgram(programId);
+        if (program && program.status !== 'completed') {
+            program.status = 'completed';
+            saveCustomProgram(program);
+        }
+    }
+}
+function updateProgramStatusByDate(programId) {
+    let program = getCustomProgram(programId);
+    if (!program) return;
+    
+    // 如果已经是已完成，不再更改
+    if (program.status === 'completed') return;
+    
+    // 如果有开始日期且未开始，自动设置为进行中
+    if (program.scheduleStartDate && program.status === 'not_started') {
+        let startDate = new Date(program.scheduleStartDate);
+        let today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (startDate <= today) {
+            program.status = 'active';
+            saveCustomProgram(program);
+        }
+    }
+}
