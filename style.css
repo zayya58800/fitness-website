@@ -1,1 +1,1468 @@
+/* ===== 训记风格 - 纯黑白灰 ===== */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
+:root {
+    --bg-primary: #000000;
+    --bg-secondary: #0a0a0a;
+    --bg-card: #111111;
+    --bg-card-hover: #1a1a1a;
+    --bg-input: #0d0d0d;
+    --border: #222222;
+    --border-light: #2a2a2a;
+    --accent: #ffffff;
+    --accent-dim: rgba(255,255,255,0.1);
+    --green: #ffffff;
+    --red: #ffffff;
+    --text-primary: #ffffff;
+    --text-secondary: #888888;
+    --text-muted: #555555;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+    --transition: 0.2s ease;
+}
+
+html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Helvetica, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.5;
+    min-height: 100vh;
+    padding-bottom: 80px;
+    overflow-x: hidden;
+}
+
+/* ===== 滚动条 ===== */
+::-webkit-scrollbar {
+    width: 4px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+/* ===== App容器 ===== */
+.app-container {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: var(--bg-primary);
+}
+
+/* ===== 状态栏占位 ===== */
+.status-bar {
+    height: 44px;
+    padding: 0 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* ===== 头部导航 ===== */
+.app-header {
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #000000;
+    border-bottom: 0.5px solid #222;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+}
+
+.logo-icon {
+    width: 28px;
+    height: 28px;
+    background: #fff;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: #000;
+}
+
+.nav-links {
+    display: none;
+}
+
+.burger {
+    display: none;
+}
+
+/* ===== 页面标题 ===== */
+.page-title {
+    padding: 20px 20px 8px;
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #fff;
+}
+
+.page-title small {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: #666;
+    margin-top: 2px;
+}
+
+/* ===== 容器 ===== */
+.container {
+    padding: 0 16px;
+}
+
+/* ===== 卡片 ===== */
+.card {
+    background: #111;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 0.5px solid #222;
+}
+
+.card-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #666;
+    margin-bottom: 12px;
+}
+
+.card h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.card h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+/* ===== 今日热量总结 ===== */
+.summary-card {
+    background: #0a0a0a;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 12px;
+    border: 0.5px solid #222;
+    text-align: center;
+}
+
+.summary-card h3 {
+    color: #fff;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+}
+
+.summary-card p {
+    margin: 6px 0;
+    font-size: 0.85rem;
+    color: #aaa;
+}
+
+.summary-deficit {
+    color: #fff;
+    font-weight: 600;
+}
+
+.summary-surplus {
+    color: #fff;
+    font-weight: 600;
+}
+
+.summary-balanced {
+    color: #fff;
+    font-weight: 600;
+}
+
+/* ===== 按钮 ===== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #000;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    margin: 4px 0;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: scale(0.98);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid #333;
+    color: #fff;
+}
+
+.btn-outline:hover {
+    background: #1a1a1a;
+}
+
+.btn-small {
+    padding: 8px 16px;
+    font-size: 0.75rem;
+    width: auto;
+}
+
+.btn-danger {
+    background: #ff3b30;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #ff3b30;
+    opacity: 0.8;
+}
+
+.btn-ghost {
+    background: transparent;
+    border: 1px solid #333;
+    color: #fff;
+}
+
+/* ===== 肌肉选择网格 ===== */
+.muscle-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.muscle-chip {
+    background: #111;
+    border-radius: 40px;
+    padding: 10px 8px;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 0.5px solid #333;
+    transition: all 0.2s;
+    color: #aaa;
+}
+
+.muscle-chip:hover {
+    border-color: #fff;
+    color: #fff;
+}
+
+.muscle-chip.selected {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+}
+
+/* ===== 动作项 ===== */
+.exercise-item {
+    background: #0d0d0d;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border-left: 3px solid #fff;
+}
+
+.checkbox-custom {
+    width: 22px;
+    height: 22px;
+    margin-top: 2px;
+    cursor: pointer;
+    accent-color: #fff;
+}
+
+.exercise-name {
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.exercise-detail {
+    color: #666;
+    font-size: 0.75rem;
+    margin-top: 2px;
+}
+
+.equipment-badge {
+    display: inline-block;
+    background: #1a1a1a;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: #888;
+    margin-left: 6px;
+}
+
+.youtube-link {
+    display: inline-block;
+    background: #1a1a1a;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: #aaa;
+    text-decoration: none;
+    margin-top: 6px;
+}
+
+.youtube-link:hover {
+    background: #333;
+    color: #fff;
+}
+
+/* ===== 日历 ===== */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    text-align: center;
+    margin: 12px 0;
+}
+
+.cal-day {
+    background: #0d0d0d;
+    border-radius: 10px;
+    padding: 8px 4px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    border: 0.5px solid transparent;
+    transition: all 0.2s;
+    color: #aaa;
+}
+
+.cal-day.has-workout {
+    background: #00E5B2;
+    color: #000;
+    font-weight: 700;
+}
+
+.cal-day.today {
+    border-color: #fff;
+}
+
+.workout-summary {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a1a1a;
+    border: 0.5px solid #333;
+    padding: 4px 8px;
+    border-radius: 8px;
+    white-space: nowrap;
+    font-size: 0.65rem;
+    z-index: 20;
+    color: #fff;
+}
+
+.cal-day {
+    position: relative;
+}
+
+.cal-day:hover .workout-summary {
+    display: block;
+}
+
+/* ===== 折叠面板 ===== */
+.accordion {
+    background: #111;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    border: 0.5px solid #222;
+    overflow: hidden;
+}
+
+.accordion-header {
+    padding: 14px 16px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    background: #0d0d0d;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.accordion-content {
+    padding: 0 16px 16px;
+    display: none;
+}
+
+.accordion-content > div {
+    padding: 10px 0;
+    border-bottom: 0.5px solid #222;
+}
+
+.accordion-content > div:last-child {
+    border-bottom: none;
+}
+
+/* ===== 表单元素 ===== */
+input, select, textarea {
+    background: #0d0d0d;
+    border: 0.5px solid #333;
+    padding: 10px 14px;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 0.85rem;
+    width: 100%;
+    font-family: inherit;
+    outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #fff;
+}
+
+input::placeholder, textarea::placeholder {
+    color: #444;
+}
+
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888888' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+}
+
+.form-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.form-row input {
+    flex: 1;
+}
+
+/* ===== Tab按钮 ===== */
+.tab-buttons {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    background: #0d0d0d;
+    border: 0.5px solid #333;
+    padding: 8px 16px;
+    border-radius: 30px;
+    color: #888;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+}
+
+/* ===== 食物项 ===== */
+.food-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 0.5px solid #222;
+    flex-wrap: wrap;
+}
+
+.food-name {
+    font-weight: 500;
+    min-width: 70px;
+    font-size: 0.85rem;
+}
+
+.food-calories {
+    color: #fff;
+    font-size: 0.75rem;
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+.food-checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: #fff;
+}
+
+.quantity-input {
+    width: 70px;
+    padding: 6px 8px;
+    text-align: center;
+    font-size: 0.75rem;
+    margin: 0;
+}
+
+.intake-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 0.5px solid #222;
+    gap: 8px;
+    font-size: 0.8rem;
+}
+
+.delete-intake {
+    background: #1a1a1a;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 20px;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 0.65rem;
+}
+
+.delete-intake:hover {
+    background: #ff3b30;
+    color: #fff;
+}
+
+/* ===== 评论 ===== */
+.comment-item {
+    background: #0d0d0d;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 8px;
+}
+
+.comment-name {
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.comment-time {
+    font-size: 0.65rem;
+    color: #666;
+    margin-left: 6px;
+}
+
+/* ===== 跑步记录 ===== */
+.run-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 0.5px solid #222;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+}
+
+.run-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.edit-run, .delete-run {
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.65rem;
+    font-weight: 500;
+}
+
+.edit-run {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+.delete-run {
+    background: #1a1a1a;
+    color: #aaa;
+}
+
+.delete-run:hover {
+    background: #ff3b30;
+    color: #fff;
+}
+
+.location-btn {
+    background: #0d0d0d;
+    border: 0.5px solid #333;
+    padding: 10px;
+    border-radius: 12px;
+    margin: 8px 0;
+    text-align: center;
+    cursor: pointer;
+    color: #fff;
+    font-weight: 500;
+}
+
+.location-btn:hover {
+    background: #1a1a1a;
+}
+
+/* ===== 结果框 ===== */
+.result-box {
+    background: #0d0d0d;
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 10px;
+    border-left: 2px solid #fff;
+}
+
+.result-box p {
+    margin: 4px 0;
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+/* ===== 统计卡片 ===== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 12px 0;
+}
+
+.stat-card {
+    background: #0d0d0d;
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+    border: 0.5px solid #222;
+}
+
+.stat-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.stat-label {
+    font-size: 0.65rem;
+    color: #666;
+    margin-top: 2px;
+}
+
+/* ===== 底部导航栏（App风格）===== */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 480px;
+    margin: 0 auto;
+    background: #000000;
+    border-top: 0.5px solid #222;
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 16px 12px;
+    z-index: 100;
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    min-width: 48px;
+}
+
+.nav-icon {
+    font-size: 1.3rem;
+    line-height: 1;
+}
+
+.nav-label {
+    font-size: 0.55rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.nav-item.active {
+    color: #fff;
+}
+
+.nav-item:active {
+    transform: scale(0.95);
+}
+
+/* ===== 表格 ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+}
+
+th {
+    padding: 10px;
+    background: #111;
+    text-align: left;
+    font-weight: 600;
+    color: #fff;
+    border-bottom: 0.5px solid #333;
+}
+
+td {
+    padding: 8px;
+    border-bottom: 0.5px solid #222;
+}
+
+/* ===== 照片墙 ===== */
+.progress-photo {
+    width: 100%;
+    max-width: 150px;
+    border-radius: 12px;
+    border: 1px solid #333;
+}
+
+/* ===== 模态框 ===== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 20px;
+}
+
+.modal-content {
+    background: #111;
+    border-radius: 16px;
+    padding: 20px;
+    width: 100%;
+    max-width: 320px;
+    border: 0.5px solid #333;
+}
+
+/* ===== 响应式 ===== */
+@media (min-width: 769px) {
+    body {
+        background: #000;
+    }
+    .app-container {
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    .bottom-nav {
+        display: none;
+    }
+    .nav-links {
+        display: flex;
+        gap: 4px;
+    }
+    .nav-links a {
+        color: #888;
+        text-decoration: none;
+        font-size: 0.75rem;
+        padding: 6px 12px;
+        border-radius: 20px;
+        cursor: pointer;
+    }
+    .nav-links a.active,
+    .nav-links a:hover {
+        color: #fff;
+        background: #1a1a1a;
+    }
+    .burger {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 12px;
+    }
+    .card {
+        padding: 14px;
+    }
+    .muscle-grid {
+        gap: 6px;
+    }
+    .muscle-chip {
+        padding: 8px 6px;
+        font-size: 0.75rem;
+    }
+    .page-title {
+        font-size: 1.5rem;
+        padding: 16px 16px 4px;
+    }
+}
+
+/* ===== 组间倒计时样式 ===== */
+.btn-set {
+    padding: 4px 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.75rem;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.btn-set:hover:not(:disabled) {
+    background: #3A4675 !important;
+    transform: scale(1.05);
+}
+.btn-set:disabled {
+    opacity: 0.7;
+    cursor: default;
+}
+.rest-timer {
+    font-size: 0.85rem;
+    padding: 4px 10px;
+    background: #1A2235;
+    border-radius: 8px;
+    animation: pulse 1s ease-in-out infinite;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* ===== 7日计划样式 ===== */
+.week-day-tab {
+    flex: 1;
+    min-width: 60px;
+    font-size: 0.8rem;
+    padding: 8px 4px;
+    border-radius: 10px;
+    border: none;
+    background: #1A2235;
+    color: #aaa;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+.week-day-tab.active {
+    background: #00D4FF;
+    color: #000;
+    font-weight: bold;
+}
+.week-day-tab.active small {
+    color: #333 !important;
+}
+.week-day-tab:hover:not(.active) {
+    background: #2A3655;
+}
+
+/* 计划中的输入框 */
+.week-plan-weight, .week-plan-reps, .week-plan-rest {
+    background: #0E1428 !important;
+    border: 1px solid #2A3655 !important;
+    color: #fff !important;
+    text-align: center;
+}
+.week-plan-weight:focus, .week-plan-reps:focus, .week-plan-rest:focus {
+    border-color: #00D4FF !important;
+    outline: none;
+}
+
+/* 训练页自定义参数输入框 */
+.ex-weight-input, .ex-reps-input, .ex-rest-input {
+    background: #0E1428 !important;
+    border: 1px solid #2A3655 !important;
+    color: #fff !important;
+    text-align: center;
+}
+.ex-weight-input:focus, .ex-reps-input:focus, .ex-rest-input:focus {
+    border-color: #00D4FF !important;
+    outline: none;
+}
+/* ==================== 自定义计划创建器样式 ==================== */
+
+/* 计划列表 */
+.program-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.program-card {
+    background: #111;
+    border-radius: 16px;
+    border: 0.5px solid #222;
+    overflow: hidden;
+    transition: all 0.2s;
+}
+
+.program-card:hover {
+    background: #151515;
+}
+
+.program-header {
+    padding: 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.program-info h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.program-info p {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.program-status {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.status-not_started {
+    background: #1a1a1a;
+    color: #888;
+}
+
+.status-active {
+    background: #00D4FF20;
+    color: #00D4FF;
+    border: 0.5px solid #00D4FF;
+}
+
+.status-completed {
+    background: #00E5B220;
+    color: #00E5B2;
+}
+
+.program-details {
+    padding: 0 16px 16px;
+    border-top: 0.5px solid #2a2a2a;
+    background: #0a0a0a;
+}
+
+.week-summary {
+    margin: 12px 0;
+    padding: 10px;
+    background: #0E1428;
+    border-radius: 12px;
+}
+
+.week-summary h4 {
+    font-size: 0.8rem;
+    color: #00D4FF;
+    margin-bottom: 6px;
+}
+
+.day-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.day-badge {
+    background: #1a1a1a;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    color: #aaa;
+}
+
+/* 创建计划表单 */
+.form-section {
+    background: #0d0d0d;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.form-section h3 {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    color: #00D4FF;
+}
+
+.weeks-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.week-card {
+    background: #0a0a0a;
+    border-radius: 12px;
+    border: 0.5px solid #2a2a2a;
+    overflow: hidden;
+}
+
+.week-header {
+    padding: 12px 16px;
+    background: #111;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.days-container {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.day-card {
+    background: #1a1a1a;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 0.5px solid #333;
+}
+
+.exercises-list {
+    margin-top: 10px;
+}
+
+.exercise-item-small {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background: #0d0d0d;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    font-size: 0.8rem;
+}
+
+/* 动作搜索弹窗 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.95);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.modal-header {
+    padding: 16px;
+    background: #0a0a0a;
+    border-bottom: 0.5px solid #222;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.modal-body {
+    flex: 1;
+    padding: 16px;
+}
+
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.filter-select {
+    background: #111;
+    border: 0.5px solid #333;
+    padding: 8px 12px;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.search-exercise-list {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.search-exercise-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #0d0d0d;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.search-exercise-item:hover {
+    background: #1a1a1a;
+}
+
+.search-exercise-item.selected {
+    background: #00D4FF20;
+    border: 0.5px solid #00D4FF;
+}
+
+/* ==================== 日程视图样式 ==================== */
+
+.schedule-view {
+    margin-top: 16px;
+}
+
+.schedule-tabs {
+    display: flex;
+    gap: 0;
+    background: #1A2235;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.schedule-tab-btn {
+    flex: 1;
+    padding: 12px;
+    background: transparent;
+    border: none;
+    color: #aaa;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.schedule-tab-btn.active {
+    background: #00D4FF;
+    color: #000;
+    font-weight: bold;
+}
+
+/* 周视图 */
+.week-view {
+    background: #0d0d0d;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.week-header-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: #111;
+    border-bottom: 0.5px solid #222;
+}
+
+.week-day-header {
+    padding: 12px 4px;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #00D4FF;
+}
+
+.week-days-grid {
+    display: flex;
+    flex-direction: column;
+}
+
+.week-day-card {
+    padding: 12px;
+    border-bottom: 0.5px solid #222;
+    min-height: 100px;
+}
+
+.week-day-header-sm {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #aaa;
+}
+
+.week-day-today {
+    background: #00D4FF10;
+    border-left: 2px solid #00D4FF;
+}
+
+.schedule-event-item {
+    background: #1a1a1a;
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.schedule-event-item:hover {
+    background: #2a2a2a;
+}
+
+.schedule-event-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.schedule-event-desc {
+    font-size: 0.65rem;
+    color: #888;
+    margin-top: 2px;
+}
+
+/* 月视图 */
+.month-view {
+    background: #0d0d0d;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.month-header-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: #111;
+    padding: 10px 0;
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #00D4FF;
+}
+
+.month-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.month-day-cell {
+    min-height: 80px;
+    padding: 6px;
+    border: 0.5px solid #222;
+    background: #0a0a0a;
+    position: relative;
+}
+
+.month-day-number {
+    font-size: 0.7rem;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.month-day-today {
+    background: #00D4FF10;
+}
+
+.month-day-has-event {
+    background: #00E5B210;
+}
+
+.month-day-event {
+    font-size: 0.6rem;
+    background: #1a1a1a;
+    padding: 2px 4px;
+    border-radius: 4px;
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+/* 7日日历提醒 */
+.timeline-calendar {
+    background: #0d0d0d;
+    border-radius: 16px;
+    padding: 12px;
+    margin-bottom: 16px;
+}
+
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.timeline-nav-btn {
+    background: #1a1a1a;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.timeline-days {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 8px;
+}
+
+.timeline-day {
+    flex: 0 0 80px;
+    text-align: center;
+    padding: 10px 4px;
+    background: #111;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.timeline-day.selected {
+    background: #00D4FF;
+    color: #000;
+}
+
+.timeline-day-date {
+    font-size: 0.7rem;
+    color: #888;
+}
+
+.timeline-day.selected .timeline-day-date {
+    color: #000;
+}
+
+.timeline-day-name {
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.timeline-events {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 0.5px solid #222;
+}
+
+/* 提醒弹窗 */
+.reminder-modal {
+    position: fixed;
+    bottom: 100px;
+    left: 16px;
+    right: 16px;
+    max-width: 400px;
+    margin: 0 auto;
+    background: #111;
+    border-radius: 16px;
+    border: 0.5px solid #00D4FF;
+    z-index: 200;
+    animation: slideUp 0.3s ease;
+}
+
+.reminder-header {
+    padding: 12px 16px;
+    background: #00D4FF;
+    color: #000;
+    border-radius: 15px 15px 0 0;
+    font-weight: bold;
+}
+
+.reminder-body {
+    padding: 16px;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* 计划状态选择器 */
+.program-status-selector {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.status-option {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    background: #0d0d0d;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.75rem;
+}
+
+.status-option.active {
+    background: #00D4FF;
+    color: #000;
+}
+
+/* 日程选择器 */
+.date-selector {
+    background: #0d0d0d;
+    border-radius: 12px;
+    padding: 12px;
+    margin: 12px 0;
+}
+
+.date-input {
+    background: #1a1a1a;
+    border: 0.5px solid #333;
+    padding: 10px;
+    border-radius: 8px;
+    color: #fff;
+    width: 100%;
+}
