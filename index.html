@@ -1,1 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>MuscleMap | 健身训练助手</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .lang-switch {
+            display: flex;
+            gap: 4px;
+            background: #0a0a0a;
+            padding: 4px 8px;
+            border-radius: 30px;
+            margin-left: auto;
+            margin-right: 12px;
+        }
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: #888;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .lang-btn.active {
+            background: #fff;
+            color: #000;
+        }
+        .lang-btn:hover:not(.active) {
+            background: #222;
+            color: #fff;
+        }
+        @media (max-width: 768px) {
+            .lang-switch {
+                margin-right: 0;
+            }
+        }
+        /* ===== 可滚动底部导航栏 ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 480px;
+            margin: 0 auto;
+            background: #000000;
+            border-top: 0.5px solid #222;
+            display: flex;
+            gap: 2px;
+            padding: 8px 12px 12px;
+            z-index: 100;
+            padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            justify-content: flex-start;
+        }
+        .bottom-nav::-webkit-scrollbar {
+            height: 3px;
+        }
+        .bottom-nav::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            border-radius: 3px;
+        }
+        .bottom-nav::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 3px;
+        }
+        .nav-item {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            background: none;
+            border: none;
+            color: #555;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            min-width: 52px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .nav-item.active {
+            color: #fff;
+        }
+        .nav-item:active {
+            transform: scale(0.95);
+        }
+        .nav-icon {
+            font-size: 1.3rem;
+            line-height: 1;
+        }
+        .nav-label {
+            font-size: 0.55rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+    </style>
+</head>
+<body>
 
+<div class="app-container">
+    <header class="app-header">
+        <div class="logo">
+            <div class="logo-icon">💪</div>
+            <span data-i18n="appName">MuscleMap</span>
+        </div>
+        <div class="lang-switch">
+            <button class="lang-btn active" data-lang="zh">中</button>
+            <button class="lang-btn" data-lang="my">မြန်မာ</button>
+            <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a data-page="home" class="active" data-i18n="navHome">🏠 首页</a>
+            <a data-page="weeklyPlan" data-i18n="navWeeklyPlan">📅 计划</a>
+            <a data-page="schedule" data-i18n="navSchedule">📅 日程</a>
+            <a data-page="train" data-i18n="navTrain">🔥 训练</a>
+            <a data-page="nutrition" data-i18n="navNutrition">🥗 饮食</a>
+            <a data-page="progress" data-i18n="navProgress">📈 进度</a>
+            <a data-page="library" data-i18n="navLibrary">📚 动作库</a>
+            <a data-page="contact" data-i18n="navContact">📧 联系</a>
+        </div>
+        <button class="burger" id="burgerBtn">☰</button>
+    </header>
+
+    <main id="app">
+        <div class="container" style="text-align:center; padding: 3rem;">
+            <div class="card" data-i18n="commonLoading">加载中...</div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="nav-item active" data-page="home">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label" data-i18n="navHome">首页</span>
+        </button>
+        <button class="nav-item" data-page="weeklyPlan">
+            <span class="nav-icon">📅</span>
+            <span class="nav-label" data-i18n="navWeeklyPlan">计划</span>
+        </button>
+        <button class="nav-item" data-page="schedule">
+            <span class="nav-icon">📅</span>
+            <span class="nav-label" data-i18n="navSchedule">日程</span>
+        </button>
+        <button class="nav-item" data-page="train">
+            <span class="nav-icon">🔥</span>
+            <span class="nav-label" data-i18n="navTrain">训练</span>
+        </button>
+        <button class="nav-item" data-page="nutrition">
+            <span class="nav-icon">🥗</span>
+            <span class="nav-label" data-i18n="navNutrition">饮食</span>
+        </button>
+        <button class="nav-item" data-page="progress">
+            <span class="nav-icon">📈</span>
+            <span class="nav-label" data-i18n="navProgress">进度</span>
+        </button>
+        <button class="nav-item" data-page="library">
+            <span class="nav-icon">📚</span>
+            <span class="nav-label" data-i18n="navLibrary">动作库</span>
+        </button>
+        <button class="nav-item" data-page="contact">
+            <span class="nav-icon">📧</span>
+            <span class="nav-label" data-i18n="navContact">联系</span>
+        </button>
+    </nav>
+</div>
+
+<script src="i18n.js"></script>
+<script src="data.js"></script>
+<script src="utils.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
